@@ -58,7 +58,7 @@ int main() {
   close(pipes[1]);
 
   // Wait for child processes
-  waitpid(pid1, NULL, 0);
+  waitpid(pid, NULL, 0);
   waitpid(pid2, NULL, 0);
 
   return 0;
