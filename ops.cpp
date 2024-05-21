@@ -1,61 +1,78 @@
 #include <iostream>
 #include <string>
-#include <limits>
-
-using namespace std;
-
-bool isArithmetic(const string& op) {
-  return op == "+" || op == "-" || op == "x" || op == "/" || op == "%";
-}
-
-bool isRelational(const string& op) {
-  return op == "==" || op == "!=" || op == "<=" || op == ">=" || op == "<" || op == ">";
-}
+#include <cstdlib>  // For std::exit
+#include <sstream>  // For std::stringstream
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    cerr << "Usage: " << argv[0] << " <operator> <value>" << endl;
-    return 1;
-  }
-
-  string op(argv[1]);
-  double p;
-  stringstream(argv[2]) >> p;
-
-  double q;
-  while (cin >> q) {
-    if (isArithmetic(op)) {
-      switch (op[0]) {
-        case '+': cout << q + p << endl; break;
-        case '-': cout << q - p << endl; break;
-        case 'x': cout << q * p << endl; break;
-        case '/':
-          if (p == 0) {
-            cerr << "Error: Division by zero" << endl;
-            return 1;
-          }
-          cout << q / p << endl;
-          break;
-        case '%': cout << fmod(q, p) << endl; break;
-      }
-    } else if (isRelational(op)) {
-      bool result;
-      switch (op[0]) {
-        case '=': result = q == p; break;
-        case '!': result = q != p; break;
-        case '<': result = q < p; break;
-        case '>': result = q > p; break;
-        case 'L': result = q <= p; break;
-        case 'G': result = q >= p; break;
-      }
-      if (result) {
-        cout << q << endl;
-      }
-    } else {
-      cerr << "Error: Unknown operator: " << op << endl;
-      return 1;
+    if (argc < 3) {
+        std::cerr << "Insufficient arguments\n";
+        std::exit(1);
     }
-  }
 
-  return 0;
+    std::string op = argv[1];
+    double p;
+    try {
+        p = std::stod(argv[2]);
+    } catch (...) {
+        std::cerr << "Invalid number: " << argv[2] << '\n';
+        std::exit(1);
+    }
+
+    double q;
+    std::string line;
+    
+    while (std::getline(std::cin, line)) {
+        std::stringstream ss(line);
+        ss >> q;
+        
+        if (ss.fail()) {
+            std::cerr << "Invalid input\n";
+            continue;
+        }
+        
+        if (op == "+") {
+            std::cout << q + p << '\n';
+        } else if (op == "-") {
+            std::cout << q - p << '\n';
+        } else if (op == "x") {
+            std::cout << q * p << '\n';
+        } else if (op == "/") {
+            if (p == 0) {
+                std::cerr << "Division by zero\n";
+                continue;
+            }
+            std::cout << q / p << '\n';
+        } else if (op == "%") {
+            std::cout << std::fmod(q, p) << '\n';
+        } else if (op == "==") {
+            if (q == p) {
+                std::cout << q << '\n';
+            }
+        } else if (op == "!=") {
+            if (q != p) {
+                std::cout << q << '\n';
+            }
+        } else if (op == "le") {
+            if (q <= p) {
+                std::cout << q << '\n';
+            }
+        } else if (op == "lt") {
+            if (q < p) {
+                std::cout << q << '\n';
+            }
+        } else if (op == "ge") {
+            if (q >= p) {
+                std::cout << q << '\n';
+            }
+        } else if (op == "gt") {
+            if (q > p) {
+                std::cout << q << '\n';
+            }
+        } else {
+            std::cerr << "Unknown operator: " << op << '\n';
+            std::exit(1);
+        }
+    }
+
+    return 0;
 }
