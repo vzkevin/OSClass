@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdlib>  // For std::exit
 #include <sstream>  // For std::stringstream
+#include <cmath>    // For std::fmod
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
