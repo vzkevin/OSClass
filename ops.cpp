@@ -11,19 +11,11 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    if (argc < 3) {
-        cerr << "Insufficient arguments\n";
-        exit(1);
-    }
 
     string op = argv[1];
     double p;
-    try {
-        p = stod(argv[2]);
-    } catch (...) {
-        cerr << "Invalid number: " << argv[2] << '\n';
-        exit(1);
-    }
+    p = stod(argv[2]);
+
 
     double q;
     string line;
@@ -31,12 +23,7 @@ int main(int argc, char* argv[]) {
     while (getline(cin, line)) {
         stringstream ss(line);
         ss >> q;
-        
-        if (ss.fail()) {
-            cerr << "Invalid input\n";
-            continue;
-        }
-        
+
         if (op == "+") {
             cout << q + p << '\n';
         } else if (op == "-") {
@@ -45,7 +32,7 @@ int main(int argc, char* argv[]) {
             cout << q * p << '\n';
         } else if (op == "/") {
             if (p == 0) {
-                cerr << "Division by zero\n";
+                cerr << "undefined - not possible\n";
                 continue;
             }
             cout << q / p << '\n';
@@ -76,7 +63,7 @@ int main(int argc, char* argv[]) {
                 cout << q << '\n';
             }
         } else {
-            cerr << "Unknown operator: " << op << '\n';
+            cerr << "unknown operator run again";
             exit(1);
         }
     }
