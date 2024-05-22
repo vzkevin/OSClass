@@ -1,3 +1,7 @@
+// This c ++ program uses pipes to do two child processes
+// The first child process runs (ps -aux) to get process information and writes it to the pipe. 
+// The second child process reads from the pipe and sorts the information using (sort -r -n -k 5).
+
 #include <stdio.h>
 #include <string.h> // for strlen
 #include <stdlib.h> // for exit

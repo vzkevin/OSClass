@@ -1,3 +1,7 @@
+// This program takes an operator and a number as arguments, then reads numbers from 
+// standard input, performs the specified operation between each number and the first 
+// argument number, and prints the results.
+
 #include <iostream>
 #include <string>
 #include <cstdlib>  // For exit
