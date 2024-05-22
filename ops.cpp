@@ -12,6 +12,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
+    // Collect operator and number 
     string op = argv[1];
     double p;
     p = stod(argv[2]);
@@ -20,10 +21,12 @@ int main(int argc, char* argv[]) {
     double q;
     string line;
     
+    // Read numbers
     while (getline(cin, line)) {
         stringstream ss(line);
         ss >> q;
 
+        // Operation logic
         if (op == "+") {
             cout << q + p << '\n';
         } else if (op == "-") {
