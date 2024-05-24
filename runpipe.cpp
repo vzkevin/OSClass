@@ -14,23 +14,35 @@ void execute_command(vector<vector<string>>& commands) {
 
     // Create pipes
     for (int i = 0; i < num_commands - 1; ++i) {
-        pipe(pipe_fds[i]);
+        if (pipe(pipe_fds[i]) == -1) {
+            cerr << "Pipe creation failed\n";
+            exit(1);
+        }
     }
 
     for (int i = 0; i < num_commands; ++i) {
         pid_t pid = fork();
 
-        if (pid == 0) {
+        if (pid == -1) {
+            cerr << "Fork failed\n";
+            exit(1);
+        } else if (pid == 0) {
             // Child process
 
             // If not the first command, set the input from the previous pipe
             if (i > 0) {
-                dup2(pipe_fds[i - 1][0], STDIN_FILENO);
+                if (dup2(pipe_fds[i - 1][0], STDIN_FILENO) == -1) {
+                    cerr << "dup2 input failed\n";
+                    exit(1);
+                }
             }
 
             // If not the last command, set the output to the next pipe
             if (i < num_commands - 1) {
-                dup2(pipe_fds[i][1], STDOUT_FILENO);
+                if (dup2(pipe_fds[i][1], STDOUT_FILENO) == -1) {
+                    cerr << "dup2 output failed\n";
+                    exit(1);
+                }
             }
 
             // Close all pipe file descriptors in child processes
@@ -47,6 +59,7 @@ void execute_command(vector<vector<string>>& commands) {
             args.push_back(nullptr);
 
             execvp(args[0], args.data());
+            cerr << "Command execution failed: " << args[0] << '\n';
             exit(1);
         }
     }
@@ -60,7 +73,15 @@ void execute_command(vector<vector<string>>& commands) {
     // Wait for all child processes to finish
     int status;
     for (int i = 0; i < num_commands; ++i) {
-        waitpid(-1, &status, 0);
+        if (waitpid(-1, &status, 0) == -1) {
+            cerr << "Waitpid failed\n";
+            exit(1);
+        }
+
+        // If any child process exits with a non-zero status, exit the parent with that status
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            exit(WEXITSTATUS(status));
+        }
     }
 }
 
