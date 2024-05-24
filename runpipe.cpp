@@ -65,32 +65,38 @@ void execute_command(vector<vector<string>>& commands) {
 }
 
 int main() {
-    cout << "Enter a pipeline command: ";
-    string command_line;
-    getline(cin, command_line);
+    while (true) {
+        cout << "Enter a pipeline command (or 'exit' to quit): ";
+        string command_line;
+        getline(cin, command_line);
 
-    vector<vector<string>> commands;
-    stringstream ss(command_line);
-    string segment;
-    vector<string> command_args;
-
-    // Split the command line into segments
-    while (getline(ss, segment, '|')) {
-        stringstream command_stream(segment);
-        string arg;
-
-        // Split each segment into command and arguments
-        while (command_stream >> arg) {
-            command_args.push_back(arg);
+        if (command_line == "exit") {
+            break;
         }
 
-        // Add this command and its arguments to the commands vector
-        commands.push_back(command_args);
-        // Clear the command_args vector for the next command
-        command_args.clear();
-    }
+        vector<vector<string>> commands;
+        stringstream ss(command_line);
+        string segment;
+        vector<string> command_args;
 
-    execute_command(commands);
+        // Split the command line into segments
+        while (getline(ss, segment, '|')) {
+            stringstream command_stream(segment);
+            string arg;
+
+            // Split each segment into command and arguments
+            while (command_stream >> arg) {
+                command_args.push_back(arg);
+            }
+
+            // Add this command and its arguments to the commands vector
+            commands.push_back(command_args);
+            // Clear the command_args vector for the next command
+            command_args.clear();
+        }
+
+        execute_command(commands);
+    }
 
     return 0;
 }
