@@ -10,11 +10,10 @@ using namespace std;
 
 void execute_command(vector<vector<string>>& commands) {
     int num_commands = commands.size();
-    int pipe_fds[num_commands - 1][2];  // Pipes array
+    int pipes[num_commands - 1][2];
 
-    // Create pipes
     for (int i = 0; i < num_commands - 1; ++i) {
-        pipe(pipe_fds[i]);
+        pipe(pipes[i]);
     }
 
     for (int i = 0; i < num_commands; ++i) {
@@ -25,21 +24,20 @@ void execute_command(vector<vector<string>>& commands) {
 
             // If not the first command, set the input from the previous pipe
             if (i > 0) {
-                dup2(pipe_fds[i - 1][0], STDIN_FILENO);
+                dup2(pipes[i - 1][0], STDIN_FILENO);
             }
 
             // If not the last command, set the output to the next pipe
             if (i < num_commands - 1) {
-                dup2(pipe_fds[i][1], STDOUT_FILENO);
+                dup2(pipes[i][1], STDOUT_FILENO);
             }
 
             // Close all pipe file descriptors in child processes
             for (int j = 0; j < num_commands - 1; ++j) {
-                close(pipe_fds[j][0]);
-                close(pipe_fds[j][1]);
+                close(pipes[j][0]);
+                close(pipes[j][1]);
             }
 
-            // Convert vector<string> to vector<char*> for execvp
             vector<char*> args;
             for (auto& arg : commands[i]) {
                 args.push_back(const_cast<char*>(arg.c_str()));
@@ -53,8 +51,8 @@ void execute_command(vector<vector<string>>& commands) {
 
     // Close all pipe file descriptors in the parent process
     for (int i = 0; i < num_commands - 1; ++i) {
-        close(pipe_fds[i][0]);
-        close(pipe_fds[i][1]);
+        close(pipes[i][0]);
+        close(pipes[i][1]);
     }
 
     // Wait for all child processes to finish
