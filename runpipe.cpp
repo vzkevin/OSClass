@@ -1,3 +1,4 @@
+// This program is using pipes to execute commands through the terminal identical to it
 #include <iostream>
 #include <sstream>
 #include <vector>
